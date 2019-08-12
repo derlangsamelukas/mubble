@@ -1,0 +1,222 @@
+body
+{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#app
+{
+    background-color: #dcece6;
+    font-family: Purisa, Arial;
+    font-size: 20px;
+    /* margin: 10px; */
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: red; */
+    width: calc(100vw);
+    height: calc(100vh);
+    --scale: 1;
+}
+
+.bubble-point
+{
+    --bubble-scale: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+}
+
+.bubble
+{
+    position: absolute;
+    transform: translate(-50%, -50%) scale(calc(1 + var(--bubble-scale)));
+    cursor: grab;
+    border-radius: 50%;
+    box-sizing: border-box;
+    width: 200px;
+    height: 200px;
+}
+
+.bubble[contenteditable="true"]
+{
+    cursor: text;
+    outline: none;
+    border: none;
+}
+
+.floating
+{
+    z-index: 1;
+}
+
+.floating .bubble,
+.floating .bubble-text
+{
+    cursor: grabbing;
+}
+
+.bubble-text
+{
+    text-align: center;
+    color: white;
+    position: absolute;
+    transform: translate(-50%, -50%) scale(calc(1 + var(--bubble-scale)));
+    cursor: grab;
+    outline: none;
+    width: 200px;
+    /* height: 100px; */
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+}
+
+#app .bubble-parent-title
+{
+    cursor: pointer;
+    padding: 10px 0 0 10px;
+}
+
+.bubbleup .bubble,
+.bubbleup .bubble-text
+{
+    animation: bubbleup 0.5s ease-in;
+}
+
+.bubbledown .bubble,
+.bubbledown .bubble-text
+{
+    animation: bubbleup 0.5s reverse ease-out;
+}
+
+.bubbleintoheader
+{
+    animation: bubbleintoheader-point 0.5s linear;
+}
+
+.bubbleintoheader .bubble
+{
+    animation: bubbleintoheader-bubble 0.5s linear;
+}
+
+.bubbleintoheader .bubble-text
+{
+    animation: bubbleintoheader-text 0.5s linear;
+}
+
+.bubbleheader
+{
+    transform: translate(0, 0);
+}
+
+.bubbleheader .bubble
+{
+    transform: translate(0, 0);
+    border-radius: 0;
+    width: 100vw;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.bubbleheader .bubble-text
+{
+    width: 100vw;
+    transform: translate(0, 0);
+    cursor: pointer;
+}
+
+.bubbleoutofheader
+{
+    animation: bubbleintoheader-point 0.5s linear reverse;
+}
+
+.bubbleoutofheader .bubble
+{
+    animation: bubbleintoheader-bubble 0.5s linear reverse;
+}
+
+.bubbleoutofheader .bubble-text
+{
+    animation: bubbleintoheader-text 0.5s linear reverse;
+}
+
+@keyframes bubbleup
+{
+    0%
+    {
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    80%
+    {
+        transform: translate(-50%, -50%) scale(calc(1.1 + var(--bubble-scale)));
+    }
+    
+    100%
+    {
+        transform: translate(-50%, -50%) scale(calc(1 + var(--bubble-scale)));
+    }
+}
+
+@keyframes bubbleintoheader-point
+{
+    0%
+    {
+        
+    }
+
+    70%
+    {
+        transform: translate(50vw, 100px);
+    }
+    
+    100%
+    {
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes bubbleintoheader-bubble
+{
+    0%
+    {
+        
+    }
+
+    70%
+    {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+    }
+    
+    100%
+    {
+        transform: translate(0, 0);
+        border-radius: 0;
+        width: 100vw;
+        height: 30px;
+        line-height: 30px;
+    }
+}
+
+@keyframes bubbleintoheader-text
+{
+    0%
+    {
+        
+    }
+    
+    100%
+    {
+        width: 100vw;
+        transform: translate(0, 0);
+    }
+}
