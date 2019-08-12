@@ -1,6 +1,6 @@
 
 export function create(wellItsABubble, saveMe, removeMe, diveInto){
-    var subscribed = false
+    let subscribed = false
     const bubblee = Object.assign({}, wellItsABubble)
     const nodes = {
         point: createPoint(bubblee),

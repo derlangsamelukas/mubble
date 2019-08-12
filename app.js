@@ -7,7 +7,7 @@ export default function go(world){
 }
 
 const nextId = (() => {
-    var next = 0
+    let next = 0
     return () => {
         return next++
     }
@@ -15,13 +15,13 @@ const nextId = (() => {
 
 function gogo(world, load, store){
     const mouse = {x: 100, y: 100}
-    var zoomLevel = 1
+    let zoomLevel = 1
     const colors = '#ae3030 #4fba4f #712873 #edb44c violet pink cadetblue lightgreen lightcoral coral'.split(' ')
     const texts = 'Horray,Yo,Ayayay,¿Qué tal?,Ouch,hej då,Well Well...,Hi there,Whoop,Lalalalala'.split(',')
-    var bubbles = []
+    let bubbles = []
 
     const saveBubbles = ((now = false) => {
-        var timeout = null
+        let timeout = null
         return () => {
             if(timeout !== null)
             {
