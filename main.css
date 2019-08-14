@@ -16,7 +16,16 @@ body
     /* background-color: red; */
     width: calc(100vw);
     height: calc(100vh);
+    cursor: grab;
     --scale: 1;
+}
+
+#app .zoomable
+{
+    position: relative;
+    width: 0;
+    height: 0;
+    transform: scale(var(--scale));
 }
 
 .bubble-point
@@ -54,7 +63,8 @@ body
 }
 
 .floating .bubble,
-.floating .bubble-text
+.floating .bubble-text,
+#app.floating-world
 {
     cursor: grabbing;
 }

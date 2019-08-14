@@ -1,6 +1,5 @@
 
-export function create(wellItsABubble, saveMe, removeMe, diveInto){
-    let subscribed = false
+export function create(wellItsABubble, create, saveMe, removeMe, diveInto){
     const bubblee = Object.assign({}, wellItsABubble)
     const nodes = {
         point: createPoint(bubblee),
@@ -31,64 +30,55 @@ export function create(wellItsABubble, saveMe, removeMe, diveInto){
         withAnimation('bubbleoutofheader', nodes)
     }
 
-    const listeners = {
-        input: (event) => {
+    const oncontextmenu = (event) => {
+        event.preventDefault()
+        return false
+    }
+
+    const onwheel = (event) => {
+        bubblee.scale = bubblee.scale - 0.05 * Math.sign(event.deltaY)
+        moveAndScale(bubblee, nodes)
+        saveMe(bubblee)
+        event.stopPropagation()
+    }
+
+    const onmousedown = bubblePress(bubblee, nodes, create, {
+        move: () => saveMe(bubblee),
+        remove: () => {
+            unsubscribe()
+            removeMe(bubblee)
+        },
+        space: diveIn
+    })
+
+    const listeners = [
+        create.input(nodes.text, (event) => {
             bubblee.text = nodes.text.textContent
             saveMe(bubblee)
-        },
-        contextmenu: (event) => {
-            event.preventDefault()
-            return false
-        },
-        mouseleave: (event) => {
+        }),
+        create.contextmenu(nodes.bubble, oncontextmenu),
+        create.contextmenu(nodes.text, oncontextmenu),
+        create.mouseleave(nodes.point, (event) => {
             nodes.text.setAttribute('contenteditable', false)
-        },
-        wheel: (event) => {
-            bubblee.scale = bubblee.scale - 0.05 * Math.sign(event.deltaY)
-            moveAndScale(bubblee, nodes)
-            saveMe(bubblee)
-            event.stopPropagation()
-        },
-        mousedown: bubblePress(bubblee, nodes, {
-            move: () => saveMe(bubblee),
-            remove: () => {
-                unsubscribe()
-                removeMe(bubblee)
-            },
-            space: diveIn
-        })
-    }
+        }),
+        create.wheel(nodes.bubble, onwheel),
+        create.wheel(nodes.text, onwheel),
+        create.mousedown(nodes.bubble, onmousedown),
+        create.mousedown(nodes.text, (e) => {
+            if(e.button === 2)
+            {
+                nodes.text.setAttribute('contenteditable', true)
+                document.getSelection().setPosition(nodes.text.childNodes[0], nodes.text.textContent.length)
+            }
+        }),
+    ]
     
     const subscribe = () => {
-        if(subscribed)
-        {
-            return
-        }
-        subscribed = true
-        nodes.text.addEventListener('input', listeners.input)
-        nodes.bubble.addEventListener('contextmenu', listeners.contextmenu)
-        nodes.text.addEventListener('contextmenu', listeners.contextmenu)
-        nodes.point.addEventListener('mouseleave', listeners.mouseleave)
-        nodes.bubble.addEventListener('wheel', listeners.wheel)
-        nodes.text.addEventListener('wheel', listeners.wheel)
-        nodes.bubble.addEventListener('mousedown', listeners.mousedown)
-        nodes.text.addEventListener('mousedown', listeners.mousedown)
+        listeners.forEach((attacher) => attacher.attach())
     }
 
     const unsubscribe = () => {
-        if(!subscribed)
-        {
-            return
-        }
-        subscribed = false
-        nodes.text.removeEventListener('input', listeners.input)
-        nodes.bubble.removeEventListener('contextmenu', listeners.contextmenu)
-        nodes.text.removeEventListener('contextmenu', listeners.contextmenu)
-        nodes.point.removeEventListener('mouseleave', listeners.mouseleave)
-        nodes.bubble.removeEventListener('wheel', listeners.wheel)
-        nodes.text.removeEventListener('wheel', listeners.wheel)
-        nodes.bubble.removeEventListener('mousedown', listeners.mousedown)
-        nodes.text.removeEventListener('mousedown', listeners.mousedown)
+        listeners.forEach((attacher) => attacher.detach())
     }
     
     return {
@@ -172,21 +162,23 @@ export const withAnimation = (className, nodes, cc) => bubbleWithAnimation(class
 
 const bubbleup = bubbleWithAnimation('bubbleup')
 const bubbledown = bubbleWithAnimation('bubbledown')
-const bubblePress = (bubble, nodes, on) => (event) => {
+const bubblePress = (bubble, nodes, create, on) => (event) => {
     if(event.button === 2)
     {
-        nodes.text.setAttribute('contenteditable', true)
+        on.remove && on.remove()
+        bubbledown(nodes, () => nodes.point.remove())
+        //nodes.text.setAttribute('contenteditable', true)
         // bubble.focus()
-        document.getSelection().setPosition(nodes.text.childNodes[0], nodes.text.textContent.length)
+        //document.getSelection().setPosition(nodes.text.childNodes[0], nodes.text.textContent.length)
         
         return;
     }
     on.start && on.start()
-    const start = {x: bubble.x - event.clientX, y: bubble.y - event.clientY}
+    const start = {x: bubble.x - event.x, y: bubble.y - event.y}
     nodes.point.classList.add('floating')
     const onmousemove = (event) => {
-        bubble.x = event.clientX + start.x
-        bubble.y = event.clientY + start.y
+        bubble.x = event.x + start.x
+        bubble.y = event.y + start.y
         moveAndScale(bubble, nodes)
         on.move && on.move()
     }
@@ -207,15 +199,15 @@ const bubblePress = (bubble, nodes, on) => (event) => {
     }
     const onleave = () => {
         nodes.point.classList.remove('floating')
-        window.removeEventListener('mousemove', onmousemove)
-        window.removeEventListener('mouseup', onleave)
-        window.removeEventListener('mouseleave', onmousemove)
-        window.removeEventListener('keydown', maybeRemove)
+        listeners.forEach((listener) => listener.detach())
         const parent = nodes.point.parentNode
         nodes.point.remove()
         parent.appendChild(nodes.point)
     }
-    window.addEventListener('mousemove', onmousemove)
-    window.addEventListener('mouseup', onleave)
-    window.addEventListener('keydown', maybeRemove)
+    const listeners = [
+        create.mousemove(window, onmousemove),
+        create.mouseup(window, onleave),
+        create.keydown(window, maybeRemove)
+    ]
+    listeners.forEach((listener) => listener.attach())
 }
