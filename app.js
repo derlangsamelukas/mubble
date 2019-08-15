@@ -160,7 +160,7 @@ function gogo(world, load, store){
     const onwheel = (event) => {
         const splitted = String(Math.max(0.1, zoomLevel - 0.05 * Math.sign(event.deltaY))).split('.')
         zoomLevel = parseFloat(splitted.length > 1 ? splitted[0] + '.' + splitted[1].substr(0, 10) : splitted.join('.'))
-        world.style = '--scale: ' + zoomLevel
+        world.style = '--scale: ' + zoomLevel + '; --x: ' + point.x + 'px; --y: ' + point.y + 'px;'
     }
 
     let recentlyMoved = false
@@ -176,7 +176,8 @@ function gogo(world, load, store){
             wrappedListeners.mousemove(world, (event) => {
                 point.x = event.x + start.x
                 point.y = event.y + start.y
-                zoomable.style.transform = 'scale(var(--scale)) translate(' + point.x + 'px, ' + point.y + 'px)'
+                world.style = '--scale: ' + zoomLevel + '; --x: ' + point.x + 'px; --y: ' + point.y + 'px;';
+                //zoomable.style.transform = 'scale(var(--scale)) translate(' + point.x + 'px, ' + point.y + 'px)'
                 recentlyMoved = true
             }),
             wrappedListeners.mouseup(world, () => {

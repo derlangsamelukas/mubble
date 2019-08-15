@@ -25,7 +25,7 @@ body
     position: relative;
     width: 0;
     height: 0;
-    transform: scale(var(--scale));
+    transform: scale(var(--scale)) translate(var(--x), var(--y));
 }
 
 .bubble-point
@@ -122,7 +122,7 @@ body
 
 .bubbleheader
 {
-    transform: translate(0, 0);
+    transform: scale(calc(1 / var(--scale))) translate(calc(var(--x) * -1 * var(--scale)), calc(var(--y) * -1 * var(--scale)));
 }
 
 .bubbleheader .bubble
