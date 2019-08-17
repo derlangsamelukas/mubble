@@ -19,11 +19,11 @@ const removeNulls = (bubbles) => bubbles.filter((bubble) => bubble !== null)
 
 export let remote = {
     store: (bubbles) => {
-        post('http://localhost:4301/bubbles/store', bubbles)
+        post('/store', bubbles)
         return Promise.resolve()
     },
     load: () => {
-        return post('http://localhost:4301/bubbles/load', {}).then(removeNulls)
+        return post('/load', {}).then(removeNulls)
     }
 }
 

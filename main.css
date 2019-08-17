@@ -230,3 +230,24 @@ body
         transform: translate(0, 0);
     }
 }
+
+.modal
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.modal input
+{
+    font-family: Purisa;
+    border: none;
+    margin-left: 50%;
+    margin-top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+    padding: 5px;
+}

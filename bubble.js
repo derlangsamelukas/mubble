@@ -67,8 +67,23 @@ export function create(wellItsABubble, create, saveMe, removeMe, diveInto){
         create.mousedown(nodes.text, (e) => {
             if(e.button === 2)
             {
-                nodes.text.setAttribute('contenteditable', true)
-                document.getSelection().setPosition(nodes.text.childNodes[0], nodes.text.textContent.length)
+                const modal = document.createElement('div')
+                const input = document.createElement('input')
+                modal.classList.add('modal')
+                input.type = 'text'
+                input.value = nodes.text.textContent
+                modal.appendChild(input)
+                document.body.appendChild(modal)
+                input.focus()
+                input.addEventListener('keydown', (e) => {
+                    if(e.key !== 'Enter') {return}
+                    modal.remove()
+                    nodes.text.textContent = input.value
+                    bubblee.text = nodes.text.textContent
+                    saveMe(bubblee)
+                })
+                //nodes.text.setAttribute('contenteditable', true)
+                //document.getSelection().setPosition(nodes.text.childNodes[0], nodes.text.textContent.length)
             }
         }),
     ]
