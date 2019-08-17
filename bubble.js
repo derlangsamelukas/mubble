@@ -69,14 +69,17 @@ export function create(wellItsABubble, create, saveMe, removeMe, diveInto){
             {
                 const modal = document.createElement('div')
                 const input = document.createElement('input')
+                const button = document.createElement('div')
                 modal.classList.add('modal')
+                button.classList.add('button')
+                button.textContent = 'OK'
                 input.type = 'text'
                 input.value = nodes.text.textContent
                 modal.appendChild(input)
+                modal.appendChild(button)
                 document.body.appendChild(modal)
-                input.focus()
-                input.addEventListener('keydown', (e) => {
-                    if(e.key !== 'Enter') {return}
+                window.requestAnimationFrame(() => input.focus())
+                button.addEventListener('click', () => {
                     modal.remove()
                     nodes.text.textContent = input.value
                     bubblee.text = nodes.text.textContent
